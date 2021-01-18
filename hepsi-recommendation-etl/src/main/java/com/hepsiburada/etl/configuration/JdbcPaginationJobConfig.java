@@ -1,6 +1,7 @@
 package com.hepsiburada.etl.configuration;
 
 import com.hepsiburada.etl.component.CustomReader;
+import com.hepsiburada.etl.component.ResettableCountDownLatch;
 import com.hepsiburada.etl.component.LoggingItemWriter;
 import com.hepsiburada.etl.configuration.properties.ApplicationProperties;
 import com.hepsiburada.etl.model.UserIdDto;
@@ -11,11 +12,8 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.*;
-import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,6 +41,7 @@ public class JdbcPaginationJobConfig {
     private static final String JDBC_PAGING_ITEM_READER = "pagingItemReader";
 
     private final ApplicationProperties applicationProperties;
+    private final ResettableCountDownLatch resettableCountDownLatch;
 
     @Bean
     public Job jdbcPaginationJob(Step jdbcPaginationStep,
@@ -77,12 +76,13 @@ public class JdbcPaginationJobConfig {
                                          CustomReader jdbcPagingItemReader,
                                          ItemWriter<UserIdDto> jdbcPagingItemWriter) {
         return (contribution, chunkContext) -> {
+
             deleteFromTableTasklet.execute(contribution, chunkContext);
 
             Optional<UserIdDto> readItem = Optional.ofNullable(jdbcPagingItemReader.read());
 
             if (readItem.isPresent()) {
-                //Thread.sleep(1000);
+                Thread.sleep(1000);
 
                 jdbcPagingItemWriter.write(Collections.singletonList(readItem.get()));
 
@@ -95,6 +95,7 @@ public class JdbcPaginationJobConfig {
 //            executionContext.putLong("current.index", 0L);
 //            jdbcPagingItemReader.update(executionContext);
             jdbcPagingItemReader.setCurrentItemCount(0);
+
             return RepeatStatus.FINISHED;
         };
     }
@@ -156,7 +157,7 @@ public class JdbcPaginationJobConfig {
                                                         PagingQueryProvider queryProvider,
                                                         ItemWriter<UserIdDto> jdbcPagingItemWriter,
                                                         JdbcTemplate jdbcTemplate) {
-        CustomReader reader = new CustomReader(jdbcPagingItemWriter, jdbcTemplate);
+        CustomReader reader = new CustomReader(jdbcPagingItemWriter, jdbcTemplate, resettableCountDownLatch);
 
         reader.setName(JDBC_PAGING_ITEM_READER);
         reader.setDataSource(dataSource);

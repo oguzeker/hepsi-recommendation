@@ -27,7 +27,7 @@ spring:
   batch:
     initialize-schema: NEVER
     job:
-      enabled: false
+      enabled: true
   liquibase:
     change-log: classpath:/db/changelog/db.changelog.xml
 #    enabled: false
