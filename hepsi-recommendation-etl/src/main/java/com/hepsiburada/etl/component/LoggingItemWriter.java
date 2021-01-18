@@ -11,19 +11,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@NoArgsConstructor
-@AllArgsConstructor
 public class LoggingItemWriter implements ItemWriter<UserIdDto> {
 
-    private UserIdDto userIdDto;
-    private ItemWriter<UserIdDto> jdbcBatchItemWriter;
+//    private UserIdDto userIdDto;
+//    private ItemWriter<UserIdDto> jdbcBatchItemWriter;
 
     @Override
     public void write(List<? extends UserIdDto> dtoList) throws Exception {
-        userIdDto.setUserId(dtoList.get(0).getUserId());
-        log.info("Writing data: {}", dtoList);
-
-        jdbcBatchItemWriter.write(dtoList);
+//        userIdDto.setUserId(dtoList.get(0).getUserId());
+//        log.info("Writing data: {}", dtoList);
+//
+//        jdbcBatchItemWriter.write(dtoList);
 
 //        System.out.println("  >>>>  >>>> " + userIdDto.getUserId());
     }

@@ -38,7 +38,7 @@ public class JdbcPaginationJobLauncher {
         this.jobLauncher = jobLauncher;
     }
 
-    @Scheduled(cron = "5/10 * * * * *")
+    @Scheduled(cron = "0/10 * * * * *")
     public void runSpringBatchExampleJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException {
         LOGGER.info("JDBC pagination job BEGIN");

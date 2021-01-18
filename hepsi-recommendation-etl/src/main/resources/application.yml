@@ -9,25 +9,28 @@ spring:
     url:  jdbc:postgresql://localhost:5432/data-db
     username: postgres
     password: 123456
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL9Dialect
-        generate-ddl: true
-        ddl-auto: update
-        default_schema: public
-        jdbc:
-          lob:
-            non_contextual_creation: true
-        temp:
-          use_jdbc_metadata_defaults: false
-    show-sql: false
+#    hikari:
+#      auto-commit: true
+#  jpa:
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+#        generate-ddl: true
+#        ddl-auto: update
+#        default_schema: public
+#        jdbc:
+#          lob:
+#            non_contextual_creation: true
+#        temp:
+#          use_jdbc_metadata_defaults: false
+#    show-sql: false
   batch:
     initialize-schema: NEVER
     job:
       enabled: false
   liquibase:
     change-log: classpath:/db/changelog/db.changelog.xml
+#    enabled: false
 
 db:
   jdbcUrl: jdbc:postgresql://localhost:5432/data-db
@@ -45,6 +48,6 @@ db:
 
 recommendation:
   page-size: 1
-  chunk-size: 300
+  personalized-recommendations-chunk-size: 300
   user-preferred-category-limit: 3
   category-product-limit: 10

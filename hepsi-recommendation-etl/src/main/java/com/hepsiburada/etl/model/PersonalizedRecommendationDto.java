@@ -7,8 +7,9 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode
-public class RecommendationDto {
+public class PersonalizedRecommendationDto {
 
+    private String userId;
     private int rowNum;
     private int salesCount;
     private String productId;

@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ApplicationProperties {
 
     private int pageSize;
-    private int chunkSize;
+    private int personalizedRecommendationsChunkSize;
     private int userPreferredCategoryLimit;
     private int categoryProductLimit;
 

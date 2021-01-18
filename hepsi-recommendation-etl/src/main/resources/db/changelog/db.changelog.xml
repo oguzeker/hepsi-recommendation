@@ -140,9 +140,12 @@
                                  referencedTableName="batch_step_execution"
                                  referencedColumnNames="step_execution_id"/>
     </changeSet>
-    <changeSet id="02-best_seller_products" author="oguz.eker">
+    <changeSet id="02-create-personalized_recommendations-table" author="oguz.eker">
         <createTable tableName="best_seller_products">
             <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="user_id" type="VARCHAR(15)">
                 <constraints nullable="false" primaryKey="true" />
             </column>
             <column name="row_num" type="BIGINT">
@@ -159,7 +162,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="03-user_ids" author="oguz.eker">
+    <changeSet id="03-create-user_ids-table" author="oguz.eker">
         <createTable tableName="user_ids">
             <column name="user_id" type="VARCHAR(15)">
                 <constraints nullable="false" primaryKey="true" />

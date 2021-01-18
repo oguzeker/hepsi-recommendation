@@ -1,6 +1,6 @@
 package com.hepsiburada.etl.component;
 
-import com.hepsiburada.etl.model.RecommendationDto;
+import com.hepsiburada.etl.model.PersonalizedRecommendationDto;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
@@ -9,11 +9,11 @@ import java.util.List;
 
 @Slf4j
 @NoArgsConstructor
-public class OguzLoggingItemWriter implements ItemWriter<RecommendationDto> {
+public class OguzLoggingItemWriter implements ItemWriter<PersonalizedRecommendationDto> {
 
 
     @Override
-    public void write(List<? extends RecommendationDto> wrapper) throws Exception {
+    public void write(List<? extends PersonalizedRecommendationDto> wrapper) throws Exception {
         log.info("YAZDIM ULAAAAAAAAAA !!! {}", wrapper);
     }
 
