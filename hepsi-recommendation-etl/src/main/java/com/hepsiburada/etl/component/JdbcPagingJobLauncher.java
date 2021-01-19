@@ -12,7 +12,6 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,54 +19,45 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * This bean schedules and runs the Spring Batch job which
- * reads the input data from the database by using a database
- * cursor.
- */
 @Component
-public class JdbcPaginationJobLauncher {
+public class JdbcPagingJobLauncher {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcPaginationJobLauncher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcPagingJobLauncher.class);
 
     private final Job job;
     private final JobLauncher jobLauncher;
     private final ResettableCountDownLatch resettableCountDownLatch;
 
     @Autowired
-    public JdbcPaginationJobLauncher(@Qualifier("jdbcPaginationJob") Job job, JobLauncher jobLauncher,
-                                     ResettableCountDownLatch resettableCountDownLatch) {
+    public JdbcPagingJobLauncher(@Qualifier("jdbcPagingJob") Job job,
+                                 JobLauncher jobLauncher,
+                                 ResettableCountDownLatch resettableCountDownLatch) {
         this.job = job;
         this.jobLauncher = jobLauncher;
         this.resettableCountDownLatch = resettableCountDownLatch;
     }
 
-    @Scheduled(cron = "0 0 * * * *")
-    public void runSpringBatchExampleJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
+//    @Scheduled(fixedRate = 150100)
+    @Scheduled(cron = "0/60 * * * * *")
+//    @Scheduled(cron = "0/5 * * * * *")
+    public void runJdbcPagingJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException {
-        LOGGER.info("JDBC pagination job BEGIN");
+        LOGGER.info("JDBC paging job BEGIN");
 
         jobLauncher.run(job, newExecution());
 
-        LOGGER.info("JDBC pagination job END");
+        LOGGER.info("JDBC paging job END");
     }
 
-//    @Async
-    @Scheduled(cron = "0/1 * * * * *")
-    public void asd() {
-        LOGGER.info("ASD BEGIN");
-
-
-
-//        System.out.println(" >>>> ters yüz ediliyooooorrrr: " + lockingComponent.isLocked()
-//                + " -->> " + !lockingComponent.isLocked());
-//        lockingComponent.setLocked(!lockingComponent.isLocked());
-
-        resettableCountDownLatch.countDown();
-        resettableCountDownLatch.reset();
-
-        LOGGER.info("ASD END");
-    }
+//    @Scheduled(fixedRate = 100)
+//    public void asd() {
+//        LOGGER.info("ASD BEGIN");
+//
+//        resettableCountDownLatch.countDown();
+//        resettableCountDownLatch.reset();
+//
+//        LOGGER.info("ASD END");
+//    }
 
     private JobParameters newExecution() {
         Map<String, JobParameter> parameters = new HashMap<>();
@@ -77,4 +67,5 @@ public class JdbcPaginationJobLauncher {
 
         return new JobParameters(parameters);
     }
+
 }

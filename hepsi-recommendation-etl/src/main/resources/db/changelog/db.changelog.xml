@@ -141,7 +141,7 @@
                                  referencedColumnNames="step_execution_id"/>
     </changeSet>
     <changeSet id="02-create-personalized_recommendations-table" author="oguz.eker">
-        <createTable tableName="best_seller_products">
+        <createTable tableName="personalized_recommendations">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" />
             </column>

@@ -1,11 +1,22 @@
-//package com.hepsiburada.etl.component;
-//
-//import org.springframework.batch.item.ItemWriter;
-//
-//import java.util.List;
-//
-//public interface CustomItemWriter<T> extends ItemWriter<StudentDTO> {
-//
-//    void write(List<? extends T> var1, List<String> list) throws Exception;
-//
-//}
+package com.hepsiburada.etl.component;
+
+import com.hepsiburada.etl.model.PersonalizedRecommendationDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+
+import java.util.List;
+
+//@Slf4j
+@RequiredArgsConstructor
+public class CustomItemWriter extends JdbcBatchItemWriter<PersonalizedRecommendationDto> {
+
+    private final ResettableCountDownLatch resettableCountDownLatch;
+
+    public void write(final List<? extends PersonalizedRecommendationDto> items) throws Exception {
+        super.write(items);
+//        resettableCountDownLatch.countDown();
+//        resettableCountDownLatch.reset();
+    }
+
+}

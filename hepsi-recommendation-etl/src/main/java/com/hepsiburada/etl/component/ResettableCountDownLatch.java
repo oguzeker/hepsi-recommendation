@@ -1,7 +1,6 @@
 package com.hepsiburada.etl.component;
 
 import lombok.Data;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CountDownLatch;
@@ -11,15 +10,10 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ResettableCountDownLatch {
 
-//    private boolean locked;
-
     private final int initialCount = 1;
     private volatile CountDownLatch latch;
 
-    public ResettableCountDownLatch(
-//            int count
-    ) {
-//        initialCount = count;
+    public ResettableCountDownLatch() {
         latch = new CountDownLatch(initialCount);
     }
 

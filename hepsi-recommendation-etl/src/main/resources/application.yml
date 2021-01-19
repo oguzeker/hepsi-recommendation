@@ -5,46 +5,16 @@ spring:
   application:
     name: hepsi-recommendation-etl
   datasource:
-    driverClassName:  org.postgresql.Driver
-    url:  jdbc:postgresql://localhost:5432/data-db
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/data-db
     username: postgres
     password: 123456
-#    hikari:
-#      auto-commit: true
-#  jpa:
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.PostgreSQL9Dialect
-#        generate-ddl: true
-#        ddl-auto: update
-#        default_schema: public
-#        jdbc:
-#          lob:
-#            non_contextual_creation: true
-#        temp:
-#          use_jdbc_metadata_defaults: false
-#    show-sql: false
   batch:
     initialize-schema: NEVER
     job:
       enabled: true
   liquibase:
     change-log: classpath:/db/changelog/db.changelog.xml
-#    enabled: false
-
-db:
-  jdbcUrl: jdbc:postgresql://localhost:5432/data-db
-  username: postgres
-  password: 123456
-  driverClassName: org.postgresql.Driver
-
-## Logs queries to a logging framework's log appender such as log-back or log4j.
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        batch: DEBUG
-#        jdbc: DEBUG
 
 recommendation:
   page-size: 1
