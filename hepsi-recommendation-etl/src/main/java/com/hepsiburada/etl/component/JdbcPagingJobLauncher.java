@@ -12,7 +12,9 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -30,16 +32,16 @@ public class JdbcPagingJobLauncher {
 
     @Autowired
     public JdbcPagingJobLauncher(@Qualifier("jdbcPagingJob") Job job,
-                                 JobLauncher jobLauncher,
+                                 @Qualifier("asyncJobLauncher") JobLauncher jobLauncher,
                                  ResettableCountDownLatch resettableCountDownLatch) {
         this.job = job;
         this.jobLauncher = jobLauncher;
         this.resettableCountDownLatch = resettableCountDownLatch;
     }
 
-//    @Scheduled(fixedRate = 150100)
-    @Scheduled(cron = "0/60 * * * * *")
-//    @Scheduled(cron = "0/5 * * * * *")
+    @Scheduled(initialDelay = 1000, fixedDelay = 175000)
+//    @Scheduled(cron = "0 0/3 * * * *")
+//    @Scheduled(cron = "0/1 * * * * *")
     public void runJdbcPagingJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException {
         LOGGER.info("JDBC paging job BEGIN");
@@ -66,6 +68,17 @@ public class JdbcPagingJobLauncher {
         parameters.put("currentTime", parameter);
 
         return new JobParameters(parameters);
+    }
+
+    @Autowired
+    private ScheduledAnnotationBeanPostProcessor postProcessor;
+
+    public void stop() {
+        postProcessor.postProcessBeforeDestruction(job, "jdbcPagingJob");
+    }
+
+    public void start() {
+        postProcessor.postProcessAfterInitialization(job, "jdbcPagingJob");
     }
 
 }

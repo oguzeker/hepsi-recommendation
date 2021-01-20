@@ -21,7 +21,7 @@ public class CustomItemReader extends JdbcPagingItemReader<UserIdDto> {
     private final ResettableCountDownLatch resettableCountDownLatch;
 
     public UserIdDto read() throws Exception {
-        UserIdDto readItem = new UserIdDto();
+        UserIdDto readItem = null;
 
         Optional<UserIdDto> readItemOptional = Optional.ofNullable(super.read());
 
@@ -32,6 +32,9 @@ public class CustomItemReader extends JdbcPagingItemReader<UserIdDto> {
             resettableCountDownLatch.await();
             jdbcPagingItemWriter.write(Collections.singletonList(readItem));
         }
+//        else {
+//            resettableCountDownLatch.await();
+//        }
         return readItem;
     }
 

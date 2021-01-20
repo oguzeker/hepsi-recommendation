@@ -30,14 +30,14 @@ public class DatabaseCursorJobLauncher {
 
     @Autowired
     public DatabaseCursorJobLauncher(@Qualifier("databaseCursorJob") Job job,
-                                     JobLauncher jobLauncher,
+                                     @Qualifier("asyncJobLauncher") JobLauncher jobLauncher,
                                      ResettableCountDownLatch resettableCountDownLatch) {
         this.job = job;
         this.jobLauncher = jobLauncher;
         this.resettableCountDownLatch = resettableCountDownLatch;
     }
 
-    @Scheduled(initialDelay = 100, fixedRate = 100)
+    @Scheduled(initialDelay = 1100, fixedDelay = 300)
 //    @Scheduled(cron = "1/1 * * * * *")
     public void runDatabaseCursorJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException, InterruptedException {

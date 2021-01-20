@@ -25,7 +25,7 @@ public class ResettableCountDownLatch {
         latch.countDown();
     }
 
-    public void await() throws InterruptedException {
+    public synchronized void await() throws InterruptedException {
         latch.await();
     }
 

@@ -3,6 +3,7 @@ package com.hepsiburada.etl.configuration;
 import com.hepsiburada.etl.component.CustomItemReader;
 import com.hepsiburada.etl.component.LoggingItemWriter;
 import com.hepsiburada.etl.component.ResettableCountDownLatch;
+import com.hepsiburada.etl.component.StepItemReadListener;
 import com.hepsiburada.etl.configuration.properties.ApplicationProperties;
 import com.hepsiburada.etl.model.UserIdDto;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,8 @@ public class JdbcPagingJobConfig {
     private static final String FROM_CLAUSE = "FROM orders";
     private static final String SORT_CONFIGURATION = "user_id";
 
-    private static final String JDBC_PAGINATION_JOB = "jdbcPagingJob";
-    private static final String JDBC_PAGINATION_STEP = "jdbcPagingStep";
+    private static final String JDBC_PAGING_JOB = "jdbcPagingJob";
+    private static final String JDBC_PAGING_STEP = "jdbcPagingStep";
     private static final String JDBC_PAGING_ITEM_READER = "pagingItemReader";
 
     private final ApplicationProperties applicationProperties;
@@ -50,7 +51,7 @@ public class JdbcPagingJobConfig {
     @Bean
     public Job jdbcPagingJob(Step jdbcPagingStep,
                                  JobBuilderFactory jobBuilderFactory) {
-        Job jdbcPagingJob = jobBuilderFactory.get(JDBC_PAGINATION_JOB)
+        Job jdbcPagingJob = jobBuilderFactory.get(JDBC_PAGING_JOB)
                 .incrementer(new RunIdIncrementer())
                 .flow(jdbcPagingStep)
                 .end()
@@ -63,7 +64,8 @@ public class JdbcPagingJobConfig {
                                ItemReader<UserIdDto> jdbcPagingItemReader,
                                @Qualifier("loggingItemWriter") ItemWriter<UserIdDto> loggingItemWriter) {
         return stepBuilderFactory
-                .get(JDBC_PAGINATION_STEP)
+                .get(JDBC_PAGING_STEP)
+//                .listener(new StepItemReadListener())
                 .<UserIdDto, UserIdDto>chunk(1)
                 .reader(jdbcPagingItemReader)
                 .writer(loggingItemWriter)
