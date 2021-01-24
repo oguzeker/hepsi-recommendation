@@ -21,6 +21,10 @@ public class ResettableCountDownLatch {
         latch = new CountDownLatch(initialCount);
     }
 
+    public long getCount() {
+        return latch.getCount();
+    }
+
     public void countDown() {
         latch.countDown();
     }

@@ -20,32 +20,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class DatabaseCursorJobLauncher {
+public class NonPersonalizedJobLauncher {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseCursorJobLauncher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NonPersonalizedJobLauncher.class);
 
     private final Job job;
     private final JobLauncher jobLauncher;
-    private final ResettableCountDownLatch resettableCountDownLatch;
 
     @Autowired
-    public DatabaseCursorJobLauncher(@Qualifier("databaseCursorJob") Job job,
-                                     @Qualifier("asyncJobLauncher") JobLauncher jobLauncher,
-                                     ResettableCountDownLatch resettableCountDownLatch) {
-        this.job = job;
-        this.jobLauncher = jobLauncher;
-        this.resettableCountDownLatch = resettableCountDownLatch;
+    public NonPersonalizedJobLauncher(Job nonPersonalizedJob,
+                                      JobLauncher asyncJobLauncher) {
+        this.job = nonPersonalizedJob;
+        this.jobLauncher = asyncJobLauncher;
     }
 
-    @Scheduled(initialDelay = 100, fixedDelay = 300)
-//    @Scheduled(cron = "1/1 * * * * *")
-    public void runDatabaseCursorJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
-            JobRestartException, JobInstanceAlreadyCompleteException, InterruptedException {
+    @Scheduled(fixedDelay = 1500)
+    public void runNonPersonalizedJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
+            JobRestartException, JobInstanceAlreadyCompleteException {
         LOGGER.info("Database cursor job BEGIN");
 
         jobLauncher.run(job, newExecution());
-        resettableCountDownLatch.countDown();
-        resettableCountDownLatch.reset();
 
         LOGGER.info("Database cursor job END");
     }

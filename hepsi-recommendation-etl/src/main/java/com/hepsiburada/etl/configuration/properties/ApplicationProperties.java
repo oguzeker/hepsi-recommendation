@@ -13,5 +13,6 @@ public class ApplicationProperties {
     private int personalizedRecommendationsChunkSize;
     private int userPreferredCategoryLimit;
     private int categoryProductLimit;
+    private int nonPersonalizedProductLimit;
 
 }

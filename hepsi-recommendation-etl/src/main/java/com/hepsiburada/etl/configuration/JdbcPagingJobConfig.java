@@ -3,7 +3,6 @@ package com.hepsiburada.etl.configuration;
 import com.hepsiburada.etl.component.CustomItemReader;
 import com.hepsiburada.etl.component.LoggingItemWriter;
 import com.hepsiburada.etl.component.ResettableCountDownLatch;
-import com.hepsiburada.etl.component.StepItemReadListener;
 import com.hepsiburada.etl.configuration.properties.ApplicationProperties;
 import com.hepsiburada.etl.model.UserIdDto;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
@@ -20,7 +18,6 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,7 +62,6 @@ public class JdbcPagingJobConfig {
                                @Qualifier("loggingItemWriter") ItemWriter<UserIdDto> loggingItemWriter) {
         return stepBuilderFactory
                 .get(JDBC_PAGING_STEP)
-//                .listener(new StepItemReadListener())
                 .<UserIdDto, UserIdDto>chunk(1)
                 .reader(jdbcPagingItemReader)
                 .writer(loggingItemWriter)

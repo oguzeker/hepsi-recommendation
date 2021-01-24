@@ -39,7 +39,9 @@ public class JdbcPagingJobLauncher {
         this.resettableCountDownLatch = resettableCountDownLatch;
     }
 
-    @Scheduled(initialDelay = 1000, fixedDelay = 175000)
+    @Scheduled(fixedDelay = 275000)
+//    @Scheduled(fixedDelay = 125732)
+//    @Scheduled(fixedDelay = 150000)//123132
 //    @Scheduled(cron = "0 0/3 * * * *")
 //    @Scheduled(cron = "0/1 * * * * *")
     public void runJdbcPagingJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,

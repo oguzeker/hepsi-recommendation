@@ -151,7 +151,7 @@
             <column name="row_num" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="sales_count" type="VARCHAR(15)">
+            <column name="sales_count" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="product_id" type="VARCHAR(15)">
@@ -161,6 +161,8 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addUniqueConstraint constraintName="uq_personalized_recommendations"
+                             tableName="personalized_recommendations" columnNames="user_id, row_num"/>
     </changeSet>
     <changeSet id="03-create-user_ids-table" author="oguz.eker">
         <createTable tableName="user_ids">
@@ -168,5 +170,29 @@
                 <constraints nullable="false" primaryKey="true" />
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="04-create-non_personalized_recommendations-table" author="oguz.eker">
+        <createTable tableName="non_personalized_recommendations">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="row_label" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="row_num" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sales_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="VARCHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="VARCHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint constraintName="uq_non_personalized_recommendations"
+                             tableName="non_personalized_recommendations" columnNames="row_label, row_num"/>
     </changeSet>
 </databaseChangeLog>

@@ -36,7 +36,10 @@ public class DatabaseCursorJobConfig {
     private static final String STATEMENT_INSERT =
             "   INSERT INTO personalized_recommendations "
             + " (user_id, row_num, sales_count, product_id, category_id) "
-            + " VALUES((SELECT user_id FROM user_ids), :rowNum, :salesCount, :productId, :categoryId) ";
+            + " VALUES((SELECT user_id FROM user_ids), :rowNum, :salesCount, :productId, :categoryId) "
+            + " ON CONFLICT ON constraint uq_personalized_recommendations "
+            + " DO UPDATE SET sales_count = EXCLUDED.sales_count, product_id = EXCLUDED.product_id, category_id = EXCLUDED.category_id ";
+//            + " DO UPDATE SET sales_count = :salesCount,product_id = :productId, category_id = :categoryId ";
     private static final String QUERY_PERSONALIZED_RECOMMENDATION =
             "   SELECT row_num, _sales_count as sales_count, product_id, category_id "
             + " FROM   ( "
@@ -86,12 +89,11 @@ public class DatabaseCursorJobConfig {
     @Bean
     public Job databaseCursorJob(@Qualifier("databaseCursorStep") Step databaseCursorStep,
                                  @Qualifier("deleteFromTableStep") Step deleteFromTableStep,
+                                 Step commitStep,
                                  JobBuilderFactory jobBuilderFactory) {
         return jobBuilderFactory.get(DATABASE_CURSOR_JOB)
                 .incrementer(new RunIdIncrementer())
-//                .flow(databaseCursorStep)
-                .flow(deleteFromTableStep)
-                .next(databaseCursorStep)
+                .flow(databaseCursorStep)
                 .end()
                 .build();
     }
@@ -100,19 +102,46 @@ public class DatabaseCursorJobConfig {
     public Step deleteFromTableStep(StepBuilderFactory stepBuilderFactory,
                                    PlatformTransactionManager platformTransactionManager,
                                    Tasklet deleteFromTableTasklet) {
-        return stepBuilderFactory.get(DATABASE_CURSOR_STEP)
+        return stepBuilderFactory.get("deleteFromTableStep")
                 .transactionManager(platformTransactionManager)
                 .tasklet(deleteFromTableTasklet)
+//                .allowStartIfComplete(true)
                 .build();
     }
 
     @Bean
     public Tasklet deleteFromTableTasklet(JdbcTemplate jdbcTemplate) {
         return (contribution, chunkContext) -> {
-            jdbcTemplate.execute(STATEMENT_DELETE);
+            jdbcTemplate.update(STATEMENT_DELETE);
+            jdbcTemplate.update("COMMIT");
             return RepeatStatus.FINISHED;
         };
     }
+
+
+    /// COMMIT BEGIN
+
+    @Bean
+    public Step commitStep(StepBuilderFactory stepBuilderFactory,
+                                    PlatformTransactionManager platformTransactionManager,
+                                    Tasklet commitTasklet) {
+        return stepBuilderFactory.get("COMMIT_STEP")
+                .transactionManager(platformTransactionManager)
+                .tasklet(commitTasklet)
+//                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Tasklet commitTasklet(JdbcTemplate jdbcTemplate) {
+        return (contribution, chunkContext) -> {
+            jdbcTemplate.update("COMMIT");
+            return RepeatStatus.FINISHED;
+        };
+    }
+
+    /// COMMIT END
+
 
     @Bean
     public Step databaseCursorStep(ItemReader<PersonalizedRecommendationDto> reader,

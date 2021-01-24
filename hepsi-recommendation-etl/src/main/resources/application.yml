@@ -21,3 +21,4 @@ recommendation:
   personalized-recommendations-chunk-size: 300
   user-preferred-category-limit: 3
   category-product-limit: 10
+  non-personalized-product-limit: 10

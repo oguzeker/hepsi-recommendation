@@ -29,12 +29,14 @@ public class CustomItemReader extends JdbcPagingItemReader<UserIdDto> {
             jdbcTemplate.update(JdbcPagingJobConfig.STATEMENT_DELETE);
 
             readItem = readItemOptional.get();
-            resettableCountDownLatch.await();
+//            readItem = new UserIdDto();
+//            readItem.setUserId("user-1");
             jdbcPagingItemWriter.write(Collections.singletonList(readItem));
+
+            jdbcTemplate.update("COMMIT");
+
+            resettableCountDownLatch.await();
         }
-//        else {
-//            resettableCountDownLatch.await();
-//        }
         return readItem;
     }
 
