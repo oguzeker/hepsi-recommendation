@@ -1,26 +1,18 @@
 package com.hepsiburada.api.controller;
 
+import com.hepsiburada.api.configuration.SwaggerConfiguration;
 import com.hepsiburada.api.controller.response.RecommendationResponse;
-import com.hepsiburada.api.service.BrowsingHistoryService;
-import com.hepsiburada.api.service.RecommendationService;
-import lombok.RequiredArgsConstructor;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@RestController
-@RequiredArgsConstructor
-@RequestMapping(value = "/recommendation")
-public class RecommendationController {
-
-    private final RecommendationService recommendationService;
-
-    @GetMapping(value = "/userId/{userId}")
-    public ResponseEntity<RecommendationResponse> getUserBrowsingHistory(@PathVariable("userId") String userId) {
-        return ResponseEntity.ok(recommendationService.getUserBrowsingHistory(userId));
-//        recommendationService.getUserBrowsingHistory();
-
-//        Transaction transaction = new Transaction("10",transactionType);
-//        this.kafkaProducerService.send(transaction);
-    }
-
+@Api(tags = {
+        SwaggerConfiguration.TAG_RECOMMENDATION
+})
+public interface RecommendationController {
+    @ApiOperation(value = "Get Recommended Products For User", notes = "This endpoint fetches recommended best-selling products to the given user, either personalized or non-personalized")
+    ResponseEntity<RecommendationResponse> getRecommendation(
+            @ApiParam(value = "Id of the user entity to query for", example = "user-102") @PathVariable("userId") String userId);
 }

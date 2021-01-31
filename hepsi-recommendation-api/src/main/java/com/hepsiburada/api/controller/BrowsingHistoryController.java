@@ -1,30 +1,23 @@
 package com.hepsiburada.api.controller;
 
+import com.hepsiburada.api.configuration.SwaggerConfiguration;
 import com.hepsiburada.api.controller.response.BrowsingHistoryResponse;
-import com.hepsiburada.api.service.BrowsingHistoryService;
-import lombok.RequiredArgsConstructor;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@RestController
-@RequiredArgsConstructor
-@RequestMapping(value = "/history")
-public class BrowsingHistoryController {
+@Api(tags = {
+        SwaggerConfiguration.TAG_BROWSING_HISTORY
+})
+public interface BrowsingHistoryController {
+    @ApiOperation(value = "Get Browsing History Of User", notes = "This endpoint fetches the last ten products viewed by a given user")
+    ResponseEntity<BrowsingHistoryResponse> getUserBrowsingHistory(
+            @ApiParam(value = "Id of the user entity to query for", example = "user-102") @PathVariable("userId") String userId);
 
-    private final BrowsingHistoryService browsingHistoryService;
-
-    @GetMapping(value = "/userId/{userId}")
-    public ResponseEntity<BrowsingHistoryResponse> getUserBrowsingHistory(@PathVariable("userId") String userId) {
-        return ResponseEntity.ok(browsingHistoryService.getLatestViewsOfUser(userId));
-//        Transaction transaction = new Transaction("10",transactionType);
-//        this.kafkaProducerService.send(transaction);
-    }
-
-    @DeleteMapping(value = "/userId/{userId}/productId/{productId}")
-    public ResponseEntity deleteFromUserBrowsingHistory(@PathVariable("userId") String userId,
-                                              @PathVariable("productId") String productId) {
-        browsingHistoryService.deleteFromUserBrowsingHistory(userId, productId);
-        return ResponseEntity.ok().build();
-    }
-
+    @ApiOperation(value = "Delete From Browsing History Of User", notes = "This endpoint deletes product view records from the browsing history a given user")
+    ResponseEntity deleteFromUserBrowsingHistory(
+            @ApiParam(value = "Id of the user entity to query for", example = "user-102") @PathVariable("userId") String userId,
+            @ApiParam(value = "Id of the product to delete", example = "product-25") @PathVariable("productId") String productId);
 }

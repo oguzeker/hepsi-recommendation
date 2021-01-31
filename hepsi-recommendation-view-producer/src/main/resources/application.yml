@@ -17,7 +17,7 @@ spring:
       bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
       topic:
         name: hepsi.recommendation.views
-        num-partitions: 5
+        num-partitions: 2
         replication-factor: 1
       error-topic:
         name: hepsi.recommendation.views.errors

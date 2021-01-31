@@ -14,3 +14,20 @@ spring:
 
 recommendation:
   min-number-of-products: 5
+
+swagger:
+  api-info:
+    title: Hepsiburada - Hepsi Recommendation Api
+    description: In this web page, you can interact with API resources of Hepsi Recommendation Api
+    version: 0.0.1-SNAPSHOT
+    terms-of-service-url: 'https://generator.lorem-ipsum.info/terms-and-conditions'
+    contact:
+      name: Oguz Erhan Eker
+      url: 'https://www.linkedin.com/in/oguzerhaneker/'
+      email: 'eker.oguz@gmail.com'
+    license: 'Apache License Version 2.0'
+    license-url: 'https://www.apache.org/licenses/LICENSE-2.0'
+    vendor-extensions:
+      -
+        name: Hepsiburada
+        value: Hepsi Recommendation Api
