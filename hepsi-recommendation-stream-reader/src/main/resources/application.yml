@@ -6,13 +6,13 @@ spring:
     name: hepsi-recommendation-stream-reader
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/data-db
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/data-db}
     username: postgres
     password: 123456
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
       group-id: hepsi-recommendation-views-group
       enabled: true
       topic-name: hepsi.recommendation.views

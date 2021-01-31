@@ -1,0 +1,102 @@
+version: "3.8"
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.0.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - kafka-network
+
+  kafka:
+    image: confluentinc/cp-kafka:5.0.0
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka-network
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  postgres:
+    image: hepsiburada/postgres:13.1-case
+    networks:
+      - kafka-network
+    ports:
+      - "5432:5432"
+    environment:
+      - PGDATA=postgres
+
+  hepsi-recommendation-database:
+    image: hepsi-recommendation-database
+    build: ./hepsi-recommendation-database
+    container_name: hepsi-recommendation-database
+    networks:
+      - kafka-network
+    ports:
+      - '9594:9594'
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/data-db
+    deploy:
+      replicas: 1
+    entrypoint: ["sh", "-c", "dockerize -wait tcp://postgres:5432 -timeout 1500s -wait-retry-interval 20s java -Djava.security.egd=file:/dev/./urandom -jar hepsi-recommendation-database-0.0.1-SNAPSHOT.jar"]
+  hepsi-recommendation-etl:
+    image: hepsi-recommendation-etl
+    build: ./hepsi-recommendation-etl
+    container_name: hepsi-recommendation-etl
+    networks:
+      - kafka-network
+    ports:
+      - '9595:9595'
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/data-db
+    deploy:
+      replicas: 1
+    entrypoint: ["sh", "-c", "dockerize -wait tcp://hepsi-recommendation-database:9594 -timeout 1500s -wait-retry-interval 20s java -Djava.security.egd=file:/dev/./urandom -jar hepsi-recommendation-etl-0.0.1-SNAPSHOT.jar"]
+  hepsi-recommendation-view-producer:
+    image: hepsi-recommendation-view-producer
+    build: ./hepsi-recommendation-view-producer
+    container_name: hepsi-recommendation-view-producer
+    networks:
+      - kafka-network
+    ports:
+      - '9596:9596'
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+    deploy:
+      replicas: 1
+    entrypoint: ["sh", "-c", "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 -timeout 1500s -wait-retry-interval 20s java -Djava.security.egd=file:/dev/./urandom -jar hepsi-recommendation-view-producer-0.0.1-SNAPSHOT.jar"]
+  hepsi-recommendation-stream-reader:
+    image: hepsi-recommendation-stream-reader
+    build: ./hepsi-recommendation-stream-reader
+    container_name: hepsi-recommendation-stream-reader
+    networks:
+      - kafka-network
+    ports:
+      - '9597:9597'
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/data-db
+      BOOTSTRAP_SERVERS: kafka:9092
+    deploy:
+      replicas: 1
+    entrypoint: ["sh", "-c", "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 -wait tcp://hepsi-recommendation-database:9594 -timeout 1500s -wait-retry-interval 20s java -Djava.security.egd=file:/dev/./urandom -jar hepsi-recommendation-stream-reader-0.0.1-SNAPSHOT.jar"]
+  hepsi-recommendation-api:
+    image: hepsi-recommendation-api
+    build: ./hepsi-recommendation-api
+    container_name: hepsi-recommendation-api
+    networks:
+      - kafka-network
+    ports:
+      - '9598:9598'
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/data-db
+    deploy:
+      replicas: 1
+    entrypoint: ["sh", "-c", "dockerize -wait tcp://hepsi-recommendation-database:9594 -timeout 1500s -wait-retry-interval 20s java -Djava.security.egd=file:/dev/./urandom -jar hepsi-recommendation-api-0.0.1-SNAPSHOT.jar"]
+
+networks:
+  kafka-network:
+    name: kafka-network

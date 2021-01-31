@@ -14,7 +14,7 @@ spring:
 #            add:
 #              type:
 #                headers: false
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
       topic:
         name: hepsi.recommendation.views
         num-partitions: 5
