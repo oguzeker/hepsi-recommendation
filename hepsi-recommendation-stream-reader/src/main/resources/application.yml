@@ -1,0 +1,14 @@
+server:
+    port: 9597
+
+spring:
+  application:
+    name: hepsi-recommendation-stream-reader
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: hepsi-recommendation-views-group
+      enabled: true
+      topic-name: hepsi.recommendation.views
+

@@ -1,0 +1,14 @@
+server:
+  port: 9594
+
+spring:
+  application:
+    name: hepsi-recommendation-database
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/data-db
+    username: postgres
+    password: 123456
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog.xml
+

@@ -11,9 +11,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hepsiburada</groupId>
-    <artifactId>hepsi-recommendation-api</artifactId>
+    <artifactId>hepsi-recommendation-database</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>hepsi-recommendation-api</name>
+    <name>hepsi-recommendation-database</name>
 
     <properties>
         <jdk.version>11</jdk.version>
@@ -37,6 +37,11 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
             <scope>runtime</scope>
         </dependency>
 

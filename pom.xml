@@ -11,6 +11,9 @@
     <modules>
         <module>hepsi-recommendation-api</module>
         <module>hepsi-recommendation-etl</module>
+        <module>hepsi-recommendation-view-producer</module>
+        <module>hepsi-recommendation-stream-reader</module>
+        <module>hepsi-recommendation-database</module>
     </modules>
 
     <properties>

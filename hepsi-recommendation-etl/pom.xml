@@ -10,7 +10,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.hepsiburada</groupId>
     <artifactId>hepsi-recommendation-etl</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>hepsi-recommendation-etl</name>
 
     <properties>
         <jdk.version>11</jdk.version>

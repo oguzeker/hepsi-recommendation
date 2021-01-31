@@ -1,0 +1,25 @@
+server:
+    port: 9596
+
+spring:
+  application:
+    name: hepsi-recommendation-view-producer
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      properties:
+#        spring:
+#          json:
+#            add:
+#              type:
+#                headers: false
+      bootstrap-servers: localhost:9092
+      topic:
+        name: hepsi.recommendation.views
+        num-partitions: 5
+        replication-factor: 1
+      error-topic:
+        name: hepsi.recommendation.views.errors
+        num-partitions: 1
+        replication-factor: 1
