@@ -148,7 +148,7 @@
             <column name="user_id" type="VARCHAR(15)">
                 <constraints nullable="false" primaryKey="true" />
             </column>
-            <column name="row_num" type="BIGINT">
+            <column name="row_num" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="sales_count" type="INT">
@@ -179,7 +179,7 @@
             <column name="row_label" type="VARCHAR(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="row_num" type="BIGINT">
+            <column name="row_num" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="sales_count" type="INT">
@@ -194,5 +194,27 @@
         </createTable>
         <addUniqueConstraint constraintName="uq_non_personalized_recommendations"
                              tableName="non_personalized_recommendations" columnNames="row_label, row_num"/>
+    </changeSet>
+    <changeSet id="05-create-product_views-table" author="oguz.eker">
+        <createTable tableName="product_views">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="message_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="VARCHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_type" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

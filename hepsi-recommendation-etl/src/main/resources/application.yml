@@ -13,8 +13,6 @@ spring:
     initialize-schema: NEVER
     job:
       enabled: false
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog.xml
 
 recommendation:
   page-size: 1

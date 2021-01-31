@@ -2,6 +2,7 @@ package com.hepsiburada.viewproducer.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hepsiburada.viewproducer.component.ResettableCountDownLatch;
+import com.hepsiburada.viewproducer.model.View;
 import com.hepsiburada.viewproducer.properties.SpringKafkaProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.kafka.core.KafkaTemplate;

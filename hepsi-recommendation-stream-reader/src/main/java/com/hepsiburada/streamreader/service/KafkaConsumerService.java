@@ -1,6 +1,9 @@
 package com.hepsiburada.streamreader.service;
 
+import com.hepsiburada.streamreader.entity.ProductView;
 import com.hepsiburada.streamreader.model.View;
+import com.hepsiburada.streamreader.repository.ProductViewRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -10,7 +13,10 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KafkaConsumerService {
+
+    private final ProductViewRepository productViewRepository;
 
 //    @KafkaListener(topics = "${spring.kafka.consumer.topic}",
 //            groupId = "${spring.kafka.consumer.group-id}",
@@ -27,6 +33,13 @@ public class KafkaConsumerService {
                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {
         log.info("Consumed message with topicName: {}, and partition: {}, and offset: {}, {}",
                 topicName, partition, offset, view);
+
+        productViewRepository.save(ProductView.builder()
+                .userId(view.getUserId())
+                .sourceType(view.getContext().getSourceType())
+                .messageId(view.getMessageId())
+                .productId(view.getProperties().getProductId())
+                .build());
 //        System.out.println(" >>> Consumed msg: " + view.toString());
     }
 

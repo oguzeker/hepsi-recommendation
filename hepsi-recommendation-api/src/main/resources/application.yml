@@ -12,3 +12,5 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog.xml
 
+recommendation:
+  min-number-of-products: 5

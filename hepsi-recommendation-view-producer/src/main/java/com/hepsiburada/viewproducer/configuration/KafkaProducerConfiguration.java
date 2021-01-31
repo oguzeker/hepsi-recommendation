@@ -1,5 +1,6 @@
 package com.hepsiburada.viewproducer.configuration;
 
+import com.hepsiburada.viewproducer.model.View;
 import com.hepsiburada.viewproducer.properties.SpringKafkaProperties;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerConfig;

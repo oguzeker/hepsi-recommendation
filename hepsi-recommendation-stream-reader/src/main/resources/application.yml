@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: hepsi-recommendation-stream-reader
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/data-db
+    username: postgres
+    password: 123456
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
