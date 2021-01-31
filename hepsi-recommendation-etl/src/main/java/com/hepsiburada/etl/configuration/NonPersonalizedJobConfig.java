@@ -8,19 +8,14 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
-import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.text.MessageFormat;
@@ -29,8 +24,6 @@ import java.text.MessageFormat;
 @RequiredArgsConstructor
 public class NonPersonalizedJobConfig {
 
-    public static final String STATEMENT_DELETE =
-            "DELETE FROM non_personalized_recommendations";
     private static final String STATEMENT_INSERT =
             "   INSERT INTO non_personalized_recommendations "
             + " (row_label, row_num, sales_count, product_id, category_id) "
@@ -64,32 +57,12 @@ public class NonPersonalizedJobConfig {
 
     @Bean
     public Job nonPersonalizedJob(Step nonPersonalizedStep,
-                                  @Qualifier("nonPersonalizedDeleteFromTableStep") Step nonPersonalizedDeleteFromTableStep,
                                   JobBuilderFactory jobBuilderFactory) {
         return jobBuilderFactory.get(JOB_NAME)
                 .incrementer(new RunIdIncrementer())
-//                .start(nonPersonalizedDeleteFromTableStep)
                 .flow(nonPersonalizedStep)
                 .end()
                 .build();
-    }
-
-    @Bean
-    public Step nonPersonalizedDeleteFromTableStep(StepBuilderFactory stepBuilderFactory,
-                                                   PlatformTransactionManager platformTransactionManager,
-                                                   Tasklet deleteFromTableTasklet) {
-        return stepBuilderFactory.get(STEP_1_NAME)
-                .transactionManager(platformTransactionManager)
-                .tasklet(deleteFromTableTasklet)
-                .build();
-    }
-
-    @Bean
-    public Tasklet nonPersonalizedDeleteFromTableTasklet(JdbcTemplate jdbcTemplate) {
-        return (contribution, chunkContext) -> {
-            jdbcTemplate.execute(STATEMENT_DELETE);
-            return RepeatStatus.FINISHED;
-        };
     }
 
     @Bean

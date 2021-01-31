@@ -1,6 +1,5 @@
 package com.hepsiburada.etl.configuration;
 
-import com.hepsiburada.etl.component.CustomItemWriter;
 import com.hepsiburada.etl.component.ResettableCountDownLatch;
 import com.hepsiburada.etl.configuration.properties.ApplicationProperties;
 import com.hepsiburada.etl.model.PersonalizedRecommendationDto;
@@ -10,19 +9,15 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.text.MessageFormat;
@@ -39,7 +34,6 @@ public class DatabaseCursorJobConfig {
             + " VALUES((SELECT user_id FROM user_ids), :rowNum, :salesCount, :productId, :categoryId) "
             + " ON CONFLICT ON constraint uq_personalized_recommendations "
             + " DO UPDATE SET sales_count = EXCLUDED.sales_count, product_id = EXCLUDED.product_id, category_id = EXCLUDED.category_id ";
-//            + " DO UPDATE SET sales_count = :salesCount,product_id = :productId, category_id = :categoryId ";
     private static final String QUERY_PERSONALIZED_RECOMMENDATION =
             "   SELECT row_num, _sales_count as sales_count, product_id, category_id "
             + " FROM   ( "
@@ -88,8 +82,6 @@ public class DatabaseCursorJobConfig {
 
     @Bean
     public Job databaseCursorJob(@Qualifier("databaseCursorStep") Step databaseCursorStep,
-                                 @Qualifier("deleteFromTableStep") Step deleteFromTableStep,
-                                 Step commitStep,
                                  JobBuilderFactory jobBuilderFactory) {
         return jobBuilderFactory.get(DATABASE_CURSOR_JOB)
                 .incrementer(new RunIdIncrementer())
@@ -97,51 +89,6 @@ public class DatabaseCursorJobConfig {
                 .end()
                 .build();
     }
-
-    @Bean
-    public Step deleteFromTableStep(StepBuilderFactory stepBuilderFactory,
-                                   PlatformTransactionManager platformTransactionManager,
-                                   Tasklet deleteFromTableTasklet) {
-        return stepBuilderFactory.get("deleteFromTableStep")
-                .transactionManager(platformTransactionManager)
-                .tasklet(deleteFromTableTasklet)
-//                .allowStartIfComplete(true)
-                .build();
-    }
-
-    @Bean
-    public Tasklet deleteFromTableTasklet(JdbcTemplate jdbcTemplate) {
-        return (contribution, chunkContext) -> {
-            jdbcTemplate.update(STATEMENT_DELETE);
-            jdbcTemplate.update("COMMIT");
-            return RepeatStatus.FINISHED;
-        };
-    }
-
-
-    /// COMMIT BEGIN
-
-    @Bean
-    public Step commitStep(StepBuilderFactory stepBuilderFactory,
-                                    PlatformTransactionManager platformTransactionManager,
-                                    Tasklet commitTasklet) {
-        return stepBuilderFactory.get("COMMIT_STEP")
-                .transactionManager(platformTransactionManager)
-                .tasklet(commitTasklet)
-//                .allowStartIfComplete(true)
-                .build();
-    }
-
-    @Bean
-    public Tasklet commitTasklet(JdbcTemplate jdbcTemplate) {
-        return (contribution, chunkContext) -> {
-            jdbcTemplate.update("COMMIT");
-            return RepeatStatus.FINISHED;
-        };
-    }
-
-    /// COMMIT END
-
 
     @Bean
     public Step databaseCursorStep(ItemReader<PersonalizedRecommendationDto> reader,
@@ -174,12 +121,6 @@ public class DatabaseCursorJobConfig {
         writer.setSql(STATEMENT_INSERT);
         writer.setDataSource(dataSource);
         return writer;
-//        CustomItemWriter writer = new CustomItemWriter(resettableCountDownLatch);
-//
-//        writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
-//        writer.setSql(STATEMENT_INSERT);
-//        writer.setDataSource(dataSource);
-//        return writer;
     }
 
 }

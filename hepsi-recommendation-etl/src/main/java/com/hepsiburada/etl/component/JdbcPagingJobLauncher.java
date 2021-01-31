@@ -12,9 +12,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -28,22 +26,15 @@ public class JdbcPagingJobLauncher {
 
     private final Job job;
     private final JobLauncher jobLauncher;
-    private final ResettableCountDownLatch resettableCountDownLatch;
 
     @Autowired
     public JdbcPagingJobLauncher(@Qualifier("jdbcPagingJob") Job job,
-                                 @Qualifier("asyncJobLauncher") JobLauncher jobLauncher,
-                                 ResettableCountDownLatch resettableCountDownLatch) {
+                                 @Qualifier("asyncJobLauncher") JobLauncher jobLauncher) {
         this.job = job;
         this.jobLauncher = jobLauncher;
-        this.resettableCountDownLatch = resettableCountDownLatch;
     }
 
     @Scheduled(fixedDelay = 275000)
-//    @Scheduled(fixedDelay = 125732)
-//    @Scheduled(fixedDelay = 150000)//123132
-//    @Scheduled(cron = "0 0/3 * * * *")
-//    @Scheduled(cron = "0/1 * * * * *")
     public void runJdbcPagingJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException {
         LOGGER.info("JDBC paging job BEGIN");
@@ -53,16 +44,6 @@ public class JdbcPagingJobLauncher {
         LOGGER.info("JDBC paging job END");
     }
 
-//    @Scheduled(fixedRate = 100)
-//    public void asd() {
-//        LOGGER.info("ASD BEGIN");
-//
-//        resettableCountDownLatch.countDown();
-//        resettableCountDownLatch.reset();
-//
-//        LOGGER.info("ASD END");
-//    }
-
     private JobParameters newExecution() {
         Map<String, JobParameter> parameters = new HashMap<>();
 
@@ -70,17 +51,6 @@ public class JdbcPagingJobLauncher {
         parameters.put("currentTime", parameter);
 
         return new JobParameters(parameters);
-    }
-
-    @Autowired
-    private ScheduledAnnotationBeanPostProcessor postProcessor;
-
-    public void stop() {
-        postProcessor.postProcessBeforeDestruction(job, "jdbcPagingJob");
-    }
-
-    public void start() {
-        postProcessor.postProcessAfterInitialization(job, "jdbcPagingJob");
     }
 
 }

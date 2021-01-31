@@ -9,7 +9,6 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,11 +28,7 @@ public class CustomItemReader extends JdbcPagingItemReader<UserIdDto> {
             jdbcTemplate.update(JdbcPagingJobConfig.STATEMENT_DELETE);
 
             readItem = readItemOptional.get();
-//            readItem = new UserIdDto();
-//            readItem.setUserId("user-1");
             jdbcPagingItemWriter.write(Collections.singletonList(readItem));
-
-            jdbcTemplate.update("COMMIT");
 
             resettableCountDownLatch.await();
         }

@@ -1,7 +1,6 @@
 package com.hepsiburada.viewproducer.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hepsiburada.viewproducer.component.ResettableCountDownLatch;
 import com.hepsiburada.viewproducer.model.View;
 import com.hepsiburada.viewproducer.properties.SpringKafkaProperties;
 import org.apache.commons.lang3.StringUtils;
@@ -20,35 +19,29 @@ public class KafkaProducerService extends AbstractKafkaProducerService<View> {
     private final KafkaErrorProducerService kafkaErrorProducerService;
     private final SpringKafkaProperties springKafkaProperties;
     private final ObjectMapper objectMapper;
-    private final ResettableCountDownLatch resettableCountDownLatch;
 
     public KafkaProducerService(KafkaTemplate<String, View> kafkaTemplate,
                                 KafkaErrorProducerService kafkaErrorProducerService,
                                 SpringKafkaProperties springKafkaProperties,
-                                ObjectMapper objectMapper,
-                                ResettableCountDownLatch resettableCountDownLatch) {
+                                ObjectMapper objectMapper) {
         super(kafkaTemplate);
         this.kafkaErrorProducerService = kafkaErrorProducerService;
         this.objectMapper = objectMapper;
         this.springKafkaProperties = springKafkaProperties;
-        this.resettableCountDownLatch = resettableCountDownLatch;
     }
 
     @PostConstruct
-    public void produceMessages() throws IOException {
-//        InputStream resource = new ClassPathResource(INPUT_FILE_NAME).getInputStream();
-
+    public void produceMessages() {
         String line = StringUtils.EMPTY;
         try(BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             line = br.readLine();
             while (Objects.nonNull(line)) {
                 View view = objectMapper.readValue(line, View.class);
                 produce(view);
-//                resettableCountDownLatch.await();
                 Thread.sleep(1000);
+
                 line = br.readLine();
             }
-//        } catch (IOException e) {
         } catch (IOException | InterruptedException e) {
             kafkaErrorProducerService.produce(line);
             e.printStackTrace();

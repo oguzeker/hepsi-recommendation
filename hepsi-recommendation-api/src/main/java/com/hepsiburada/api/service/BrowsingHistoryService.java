@@ -8,24 +8,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-
 @Service
 @RequiredArgsConstructor
 public class BrowsingHistoryService {
 
+    private static final int PAGE_SIZE = 10;
+    public static final int PAGE_INDEX_FIRST = 0;
     private final ProductViewRepository productViewRepository;
 
     public BrowsingHistoryResponse getLatestViewsOfUser(String userId) {
-//        BrowsingHistoryResponse response = BrowsingHistoryResponse.builder()
-//                .userId(userId)
-//                .products(new ArrayList<>())
-//                .build();
-//        productViewRepository.findByUserIdOrderByCreatedDate(userId, PageRequest.of(0, 10))
-//                .forEach(productView -> response.getProducts().add(productView.getProductId()));
-
         return BrowsingHistoryResponseMapper.mapPersonalizedRecommendations(userId,
-                productViewRepository.findByUserIdOrderByCreatedDate(userId, PageRequest.of(0, 10)));
+                productViewRepository.findByUserIdOrderByCreatedDate(userId,
+                        PageRequest.of(PAGE_INDEX_FIRST, PAGE_SIZE)));
     }
 
     @Transactional

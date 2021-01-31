@@ -18,11 +18,6 @@ public class KafkaConsumerService {
 
     private final ProductViewRepository productViewRepository;
 
-//    @KafkaListener(topics = "${spring.kafka.consumer.topic}",
-//            groupId = "${spring.kafka.consumer.group-id}",
-//            containerFactory = "kafkaListenerContainerFactory",
-//            autoStartup = "${spring.kafka.consumer.enable}")
-//
     @KafkaListener(topics = "${spring.kafka.consumer.topic-name}",
             containerFactory = "kafkaListenerContainerFactory",
             groupId = "${spring.kafka.consumer.group-id}",
@@ -40,7 +35,6 @@ public class KafkaConsumerService {
                 .messageId(view.getMessageId())
                 .productId(view.getProperties().getProductId())
                 .build());
-//        System.out.println(" >>> Consumed msg: " + view.toString());
     }
 
 }

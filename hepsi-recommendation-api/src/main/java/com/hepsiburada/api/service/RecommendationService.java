@@ -10,9 +10,7 @@ import com.hepsiburada.api.repository.PersonalizedRecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service

@@ -17,8 +17,6 @@ public class BrowsingHistoryControllerImpl implements BrowsingHistoryController 
     @GetMapping(value = "/userId/{userId}")
     public ResponseEntity<BrowsingHistoryResponse> getUserBrowsingHistory(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(browsingHistoryService.getLatestViewsOfUser(userId));
-//        Transaction transaction = new Transaction("10",transactionType);
-//        this.kafkaProducerService.send(transaction);
     }
 
     @DeleteMapping(value = "/userId/{userId}/productId/{productId}")
