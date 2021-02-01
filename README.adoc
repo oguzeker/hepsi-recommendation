@@ -57,17 +57,21 @@ After that, run the following command to check and see the docker containers run
 
 == Basic Flow
 
-On startup, the application populates the database with dummy data so as to make the demo application easier to test. Still, you can manually perform actions through the `Rest API`.
+On startup, the application begins population history and recommendation tables with data coming from users' product view events and ETL batch processes. Afterwards, these data can be aggregated via the `Rest API`
 
 == Components[[components]]
 
-This application comprises of *five* main components/modules:
+This application comprises of *five* main components:
 
 . `hepsi-recommendation-api`
 . `hepsi-recommendation-database`
 . `hepsi-recommendation-etl`
 . `hepsi-recommendation-stream-reader`
 . `hepsi-recommendation-view-producer`
+
+Below diagram depicts the flow between components:
+
+image::hepsi-recommendation-api/src/main/resources/recommendation_engine.png[]
 
 === Extra Features
 

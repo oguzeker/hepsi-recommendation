@@ -2,7 +2,7 @@ package com.hepsiburada.api.controller.impl;
 
 import com.hepsiburada.api.controller.BrowsingHistoryController;
 import com.hepsiburada.api.controller.response.BrowsingHistoryResponse;
-import com.hepsiburada.api.service.BrowsingHistoryService;
+import com.hepsiburada.api.service.impl.BrowsingHistoryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/history")
 public class BrowsingHistoryControllerImpl implements BrowsingHistoryController {
 
-    private final BrowsingHistoryService browsingHistoryService;
+    private final BrowsingHistoryServiceImpl browsingHistoryService;
 
     @GetMapping(value = "/userId/{userId}")
     public ResponseEntity<BrowsingHistoryResponse> getUserBrowsingHistory(@PathVariable("userId") String userId) {
