@@ -20,10 +20,6 @@ public class RecommendationControllerImpl implements RecommendationController {
     @GetMapping(value = "/userId/{userId}")
     public ResponseEntity<RecommendationResponse> getRecommendation(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(recommendationService.getRecommendation(userId));
-//        recommendationService.getUserBrowsingHistory();
-
-//        Transaction transaction = new Transaction("10",transactionType);
-//        this.kafkaProducerService.send(transaction);
     }
 
 }

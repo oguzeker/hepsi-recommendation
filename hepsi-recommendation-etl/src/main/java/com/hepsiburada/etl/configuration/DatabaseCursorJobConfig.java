@@ -1,6 +1,5 @@
 package com.hepsiburada.etl.configuration;
 
-import com.hepsiburada.etl.component.ResettableCountDownLatch;
 import com.hepsiburada.etl.configuration.properties.ApplicationProperties;
 import com.hepsiburada.etl.model.PersonalizedRecommendationDto;
 import lombok.RequiredArgsConstructor;
@@ -78,7 +77,6 @@ public class DatabaseCursorJobConfig {
     public static final String DATABASE_CURSOR_JOB = "databaseCursorJob";
 
     private final ApplicationProperties applicationProperties;
-    private final ResettableCountDownLatch resettableCountDownLatch;
 
     @Bean
     public Job databaseCursorJob(@Qualifier("databaseCursorStep") Step databaseCursorStep,

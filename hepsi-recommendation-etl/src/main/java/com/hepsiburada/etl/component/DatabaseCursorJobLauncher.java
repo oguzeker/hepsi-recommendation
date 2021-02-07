@@ -38,9 +38,8 @@ public class DatabaseCursorJobLauncher {
     }
 
     @Scheduled(initialDelay = 100, fixedDelay = 300)
-//    @Scheduled(cron = "1/1 * * * * *")
     public void runDatabaseCursorJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
-            JobRestartException, JobInstanceAlreadyCompleteException, InterruptedException {
+            JobRestartException, JobInstanceAlreadyCompleteException {
         LOGGER.info("Database cursor job BEGIN");
 
         jobLauncher.run(job, newExecution());
