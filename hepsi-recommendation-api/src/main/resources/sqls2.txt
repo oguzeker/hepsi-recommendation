@@ -1,0 +1,97 @@
+-- A. how many products per category has a user bought
+select count(1) _count, p.category_id from orders o 
+inner join order_items oi on o.order_id = oi.order_id 
+inner join products p on oi.product_id = p.product_id 
+where o.user_id = 'user-346'
+group by p.category_id
+order by _count desc, category_id desc;
+
+	--IMPROVE:A.- mostly-preferred 3 categories of a user
+	select * from (
+	select count(1) _order_count, p.category_id from orders o 
+	inner join order_items oi on o.order_id = oi.order_id 
+	inner join products p on oi.product_id = p.product_id 
+	where o.user_id = 'user-346'
+	group by p.category_id
+	order by _order_count desc, category_id desc) q
+	limit 3;
+
+______________________________________________________________________________________________________________
+
+-- B. sales counts of a product category
+select count(1) _sales_count, p.product_id, p.category_id from orders o
+inner join order_items oi ON o.order_id = oi.order_id 
+inner join products p on oi.product_id = p.product_id 
+where p.category_id = 'category-2' 
+group by p.product_id 
+order by _sales_count desc, product_id desc;
+
+	--IMPROVE:B.- Sales counts of products which belong to the top three mostly-preferred categories of a user given.
+	select count(1) _sales_count, p.product_id, p.category_id from orders o
+	inner join order_items oi ON o.order_id = oi.order_id 
+	inner join products p on oi.product_id = p.product_id 
+	where p.category_id in (
+		--REF:IMPROVE A.- mostly preferred 3 categories of a user
+		select category_id from (
+		select count(1) _order_count, p.category_id from orders o 
+		inner join order_items oi on o.order_id = oi.order_id 
+		inner join products p on oi.product_id = p.product_id 
+		where o.user_id = 'user-346'
+		group by p.category_id
+		order by _order_count desc, category_id desc) q
+		limit 3
+	)
+	group by p.product_id, p.category_id 
+	order by _sales_count desc, product_id desc, category_id desc;
+
+______________________________________________________________________________________________________________
+
+
+-- C. GOAL
+SELECT row_num, _sales_count as sales_count, product_id, category_id 
+FROM   ( 
+            SELECT   row_number() OVER (partition BY category_id ORDER BY category_id ASC, _sales_count DESC) AS row_num,
+                     result_set.* 
+            FROM     (
+                            -- Sales counts of products which belong to the top three mostly-preferred categories of a given user.
+                            SELECT     count(1) _sales_count, 
+                                       p.product_id, 
+                                       p.category_id 
+                            FROM       orders o 
+                            INNER JOIN order_items oi 
+                            ON         o.order_id = oi.order_id 
+                            INNER JOIN products p 
+                            ON         oi.product_id = p.product_id 
+                            WHERE      p.category_id IN 
+                                       ( 
+                                              -- Mostly preferred 3 categories of a given user.
+                                              SELECT categories.category_id 
+                                              FROM   ( 
+                                                                SELECT     count(1) _order_count,
+                                                                           p.category_id 
+                                                                FROM       orders o 
+                                                                INNER JOIN order_items oi 
+                                                                ON         o.order_id = oi.order_id
+                                                                INNER JOIN products p 
+                                                                ON         oi.product_id = p.product_id
+                                                                WHERE      o.user_id = ( 
+                                                                       SELECT u.user_id 
+                                                                       FROM   user_ids u 
+                                                                ) 
+                                                                GROUP BY   p.category_id 
+                                                                ORDER BY   _order_count DESC,
+                                                                           category_id DESC
+                                              ) categories limit 3
+                                       )
+                            GROUP BY   p.product_id, 
+                                       p.category_id 
+            ) result_set
+) partitioned_result_set 
+WHERE  partitioned_result_set.row_num <= 10;
+
+
+select count(*) from orders o2 
+
+select count(distinct(o.user_id)) from orders o
+
+select distinct(o.user_id) from orders o order by user_id asc
